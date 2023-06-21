@@ -1,4 +1,4 @@
-function solve (num1, num2, operator) {
+function calculate (num1, num2, operator) {
 
     if (num2 === 0) {
         console.log("Can't divide by zero");
@@ -29,4 +29,4 @@ function solve (num1, num2, operator) {
             break;
     }
 }
-solve (3, 5.5, '*');
+calculate (3, 5.5, '*');
