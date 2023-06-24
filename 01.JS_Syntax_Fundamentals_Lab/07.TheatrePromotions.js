@@ -1,4 +1,4 @@
-function solve (day, age) {
+function printThePriceOfTheTicke (day, age) {
     if(age < 0 || age > 122){
         console.log("Error!");
         return;
@@ -39,4 +39,4 @@ function solve (day, age) {
             break;
     }
 }
-solve ('Weekday', 42);
+printThePriceOfTheTicke ('Weekday', 42);

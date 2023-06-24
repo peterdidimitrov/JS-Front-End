@@ -1,4 +1,4 @@
-function solve (grade) {
+function checkIfTheGradeIsExcellent (grade) {
     if (grade >= 5.50) {
         console.log("Excellent");
     }
@@ -6,4 +6,4 @@ function solve (grade) {
         console.log("Not excellent");
     }
 }
-solve(5.50);
+printTheMonth(5.50);
