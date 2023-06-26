@@ -1,30 +1,25 @@
-function solve(strNumber, operationOne, operationTwo, operationThree, operationFour, operationFive) {
+function solve(strNumber, ...operations) {
     let number = Number(strNumber);
-    let arrayOperations = [operationOne, operationTwo, operationThree, operationFour, operationFive];
 
-    arrayOperations.forEach(element => {
+    operations.forEach(element => {
         switch (element) {
             case 'chop':
                 number /= 2;
-                console.log(number);
                 break;
             case 'dice':
                 number = Math.sqrt(number);
-                console.log(number);
                 break;
             case 'spice':
                 number ++;
-                console.log(number);
                 break;
             case 'bake':
                 number *= 3;
-                console.log(number);
                 break;
             case 'fillet':
                 number -= (number * 0.2);
-                console.log(number);
                 break;
         }
+        console.log(number);
     });
 }
 solve('9', 'dice', 'spice', 'chop', 'bake', 'fillet');

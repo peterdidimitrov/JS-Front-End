@@ -33,7 +33,7 @@
 "use strict";
 
 function checkIfSllDigitsAreSame(number) {
-  const digits = Array.from(String(number), Number);
+  const digits = number.toString().split('').map(Number);
   const isConsistent = new Set(digits).size === 1;
   const sum = digits.reduce(function (total, number) {
     return total + number;
