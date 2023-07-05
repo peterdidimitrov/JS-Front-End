@@ -25,9 +25,9 @@ function sum(number) {
 sum(97561);
 
 //using recursion
-function digitCount(number) {
+function sumDigits(number) {
   let digit = number % 10;
   let remainingDigits = Math.floor(number / 10);
-  return digit + (remainingDigits != 0 ? digitCount(remainingDigits) : 0);
+  return digit + (remainingDigits != 0 ? sumDigits(remainingDigits) : 0);
 }
-console.log(digitCount(87));
+console.log(sumDigits(87));
