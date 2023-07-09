@@ -1,20 +1,17 @@
 function storeStocking(arrayOne, arrayTwo) {
-  let products = {};
-  let arr = [];
-  arrayOne.forEach((element) => arr.push(element));
-  arrayTwo.forEach((element) => arr.push(element));
+  //arrayOne.concate(arrayTwo);
+  let arr = [...arrayOne, ...arrayTwo];
 
-  for (let index = 0; index < arr.length; index += 2) {
-    let productName = arr[index];
-    let produvtAmount = Number(arr[index + 1]);
-    if (index % 2 === 0) {
-      if (products[productName] === undefined) {
-        products[productName] = produvtAmount;
-      } else {
-        products[productName] += produvtAmount;
-      }
+  let products = arr.reduce((acc, curr, i) => {
+    if (i % 2 !== 0) {
+      return acc;
     }
-  }
+    if (!acc.hasOwnProperty(curr)) {
+      acc[curr] = 0;
+    }
+    acc[curr] += Number(arr[i + 1]);
+    return acc;
+  }, {});
 
   Object.entries(products).forEach(([product, amount]) =>
     console.log(`${product} -> ${amount}`)
