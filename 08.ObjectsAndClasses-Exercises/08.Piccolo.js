@@ -1,25 +1,22 @@
-function solve(input) {
-  let parking = [];
+function printTheCurrentParkingState(input) {
+  const parking = new Set();
   input.forEach((element) => {
     let [direction, carNumber] = element.split(", ");
     if (direction === "IN") {
-      if (!parking.includes(carNumber)) {
-        parking.push(carNumber);
-      }
+      parking.add(carNumber);
     } else if (direction === "OUT") {
-      if (parking.includes(carNumber)) {
-        let car = parking.indexOf(carNumber);
-        parking.splice(car, 1);
+      if (parking.has(carNumber)) {
+        parking.delete(carNumber);
       }
     }
   });
   if (parking.length === 0) {
     console.log("Parking Lot is Empty");
   } else {
-    console.log(parking.sort().join("\n"));
+    console.log(Array.from(parking).sort().join("\n"));
   }
 }
-solve([
+printTheCurrentParkingState([
   "IN, CA2844AA",
   "IN, CA1234TA",
   "OUT, CA2844AA",
