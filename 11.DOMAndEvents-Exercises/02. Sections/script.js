@@ -7,11 +7,18 @@ function create(words) {
     p.textContent = word;
     p.style.display = "none";
 
-    div.addEventListener("click", () => {
-      p.style.display = "block";
-    });
+    div.addEventListener("click", hide);
 
     div.appendChild(p);
     contentDiv.appendChild(div);
   });
+}
+function hide(event) {
+  // select the div's children element
+  const x = event.target.querySelector("p");
+  if (x.style.display === "none") {
+    x.style.display = "block";
+  } else {
+    x.style.display = "none";
+  }
 }
