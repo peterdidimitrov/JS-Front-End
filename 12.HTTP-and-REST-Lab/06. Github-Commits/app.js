@@ -17,7 +17,7 @@ async function loadCommits() {
       ${commit.author.name}: ${commit.message}
 		  </li>`;
     });
-  } catch (err) {
-    list.innerHTML = `Error: ${err.status} (Not Found)`;
+  } catch (e) {
+    list.innerHTML = `Error: ${e.message} (Not Found)`;
   }
 }
