@@ -6,7 +6,7 @@ function solve() {
   let busId = "depot";
   let currentStop = null;
 
-  async function depart() {
+  function depart() {
     departButton.disabled = true;
     arriveButton.disabled = false;
     fetch(`${BASE_URL}${busId}`)
