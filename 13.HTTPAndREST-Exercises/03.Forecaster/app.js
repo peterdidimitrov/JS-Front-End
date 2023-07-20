@@ -3,7 +3,7 @@ function attachEvents() {
   const location = document.querySelector("#location");
 
   document.querySelector("#submit").addEventListener("click", onClick);
-  const forecast = document.querySelector("#forecast");
+  const forecastDiv = document.querySelector("#forecast");
 
   const forecastIcons = {
     Sunny: "&#x2600;",
@@ -40,9 +40,9 @@ function attachEvents() {
             }
           })
           .then((forecastDataToday) => {
-            let { forecastToday, locationName } = forecastDataToday;
+            let { name, forecast } = forecastDataToday;
             const currentForecast = document.querySelector("#current");
-            forecast.style.display = "block";
+            forecastDiv.style.display = "block";
 
             //create div
             let divForecast = document.createElement("div");
@@ -52,8 +52,8 @@ function attachEvents() {
             //crate span conditional symbol
             let spanConditionalSymbol = document.createElement("span");
             spanConditionalSymbol.className = "condition symbol";
-            // spanConditionalSymbol.innerHTML =
-            //   forecastIcons[forecastToday["condition"]];
+            spanConditionalSymbol.innerHTML =
+              forecastIcons[forecast["condition"]];
             divForecast.appendChild(spanConditionalSymbol);
 
             //create span main condition
@@ -64,14 +64,17 @@ function attachEvents() {
             //create spans forecast - data
             let spanForecastName = document.createElement("span");
             spanForecastName.className = "forecast-data";
+            spanForecastName.innerHTML = name;
             spanMain.appendChild(spanForecastName);
 
             let spanForecastTemp = document.createElement("span");
             spanForecastTemp.className = "forecast-data";
+            spanForecastTemp.innerHTML = `${forecast.low}${forecastIcons.Degrees}/${forecast.high}${forecastIcons.Degrees}`;
             spanMain.appendChild(spanForecastTemp);
 
             let spanForecastDescription = document.createElement("span");
             spanForecastDescription.className = "forecast-data";
+            spanForecastDescription.innerHTML = forecast.condition;
             spanMain.appendChild(spanForecastDescription);
           });
       });
