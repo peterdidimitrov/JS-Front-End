@@ -4,6 +4,8 @@ function attachEvents() {
 
   document.querySelector("#submit").addEventListener("click", onClick);
   const forecastDiv = document.querySelector("#forecast");
+  const currentForecast = document.querySelector("#current");
+  const mainDivUpcoming = document.querySelector("#upcoming");
 
   const forecastIcons = {
     Sunny: "&#x2600;",
@@ -13,21 +15,25 @@ function attachEvents() {
     Degrees: "&#176;",
   };
 
+  //create div with class forecast
+  createDiv("divForecast", currentForecast, "forecasts");
+
+  //create div with class forecast-info
+  createDiv("divForecastInfo", mainDivUpcoming, "forecast-info");
+
   function onClick() {
-    let currentLocation = "";
     let currentLocationCode = "";
+
+    document.querySelector(".forecasts").remove();
+    document.querySelector(".forecast-info").remove();
 
     fetch(`${baseURL}locations`)
       .then((response) => {
-        if (response.ok) {
-          return response.json();
-        }
-        throw new Error("Error");
+        return response.json();
       })
       .then((cityData) => {
         for (const elem of cityData) {
           if (elem.name === location.value) {
-            currentLocation = location.value;
             currentLocationCode = elem.code;
             break;
           }
@@ -41,10 +47,9 @@ function attachEvents() {
           })
           .then((forecastDataToday) => {
             let { name, forecast } = forecastDataToday;
-            const currentForecast = document.querySelector("#current");
             forecastDiv.style.display = "block";
 
-            //create div
+            //create div with class forecast
             let divForecast = document.createElement("div");
             divForecast.className = "forecasts";
             currentForecast.appendChild(divForecast);
@@ -76,9 +81,63 @@ function attachEvents() {
             spanForecastDescription.className = "forecast-data";
             spanForecastDescription.innerHTML = forecast.condition;
             spanMain.appendChild(spanForecastDescription);
-          });
-      });
+          })
+          .catch((error) => catchError());
+        fetch(`${baseURL}upcoming/${currentLocationCode}`)
+          .then((response) => {
+            if (response.ok) {
+              return response.json();
+            }
+          })
+          .then((forecastDataUpcoming) => {
+            //create div with class forecast-info
+            let divForecastInfo = document.createElement("div");
+            divForecastInfo.className = "forecast-info";
+            mainDivUpcoming.appendChild(divForecastInfo);
+
+            forecastDataUpcoming.forecast.forEach((dayForecast) => {
+              let { low, high, condition } = dayForecast;
+
+              //create main span upcoming
+              let mainSpan = document.createElement("span");
+              mainSpan.className = "upcoming";
+              divForecastInfo.appendChild(mainSpan);
+
+              //create spans forecast - data
+              let spanSymbol = document.createElement("span");
+              spanSymbol.className = "symbol";
+              spanSymbol.innerHTML = forecastIcons[condition];
+              divForecastInfo.appendChild(spanSymbol);
+
+              let spanForecastTemp = document.createElement("span");
+              spanForecastTemp.className = "forecast-data";
+              spanForecastTemp.innerHTML = `${low}${forecastIcons.Degrees}/${high}${forecastIcons.Degrees}`;
+              divForecastInfo.appendChild(spanForecastTemp);
+
+              let spanForecastDescription = document.createElement("span");
+              spanForecastDescription.className = "forecast-data";
+              spanForecastDescription.innerHTML = condition;
+              divForecastInfo.appendChild(spanForecastDescription);
+
+              mainSpan.appendChild(spanSymbol);
+              mainSpan.appendChild(spanForecastTemp);
+              mainSpan.appendChild(spanForecastDescription);
+            });
+          })
+          .catch((error) => catchError());
+      })
+      .catch((error) => catchError());
   }
+  function catchError() {
+    const forecastDiv = document.getElementById("forecast");
+    forecastDiv.style.display = "block";
+    forecastDiv.textContent = "Error";
+  }
+}
+function createDiv(name, parentNme, clasName) {
+  name = document.createElement("div");
+  name.className = clasName;
+  parentNme.appendChild(name);
 }
 
 attachEvents();
