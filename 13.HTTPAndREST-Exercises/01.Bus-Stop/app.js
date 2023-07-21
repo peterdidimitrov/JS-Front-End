@@ -2,26 +2,27 @@ async function getInfo() {
   const busStopID = document.querySelector("#stopId").value;
   const stopName = document.querySelector("#stopName");
   const list = document.querySelector("#buses");
+
+  list.innerHTML = "";
+
+  const servece = {
+    busInfoURL: (ID) => `http://localhost:3030/jsonstore/bus/businfo/${ID}`,
+  };
+
+  let busStopInfo;
+
   try {
-    const res = await fetch(
-      `http://localhost:3030/jsonstore/bus/businfo/${busStopID}`
-    );
-    if (res.ok === false) {
-      throw new Error(`${res.status}${res.statusText}`);
-    }
-    const data = await res.json();
-    list.innerHTML = "";
-
-    stopName.textContent = data.name;
-
-    const buses = data.buses;
-
-    Object.entries(buses).forEach(([busId, time]) => {
-      const li = document.createElement("li");
-      li.textContent = `Bus ${busId} arrives in ${time} minutes`;
-      list.appendChild(li);
-    });
-  } catch (error) {
+    const response = await fetch(servece.busInfoURL(busStopID));
+    busStopInfo = await response.json();
+  } catch (e) {
     stopName.textContent = "Error";
   }
+  stopName.textContent = busStopInfo.name;
+
+  Object.entries(busStopInfo.buses).map(([busNumber, timeInMinutes]) => {
+    const item = document.createElement("li");
+    item.textContent = `Bus ${busNumber} arrives in ${timeInMinutes} minutes`;
+
+    list.appendChild(item);
+  });
 }
