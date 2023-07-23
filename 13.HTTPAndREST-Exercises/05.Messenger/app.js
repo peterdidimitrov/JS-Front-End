@@ -1,17 +1,19 @@
 function attachEvents() {
   const BASE_MESSAGE_URL = "http://localhost:3030/jsonstore/messenger";
-  const sendButton = document.getElementById("submit");
-  const refreshButton = document.getElementById("refresh");
-  const textAreaMessage = document.getElementById("messages");
+  const sendButton = document
+    .querySelector("#submit")
+    .addEventListener("click", sendMessage);
+  const refreshButton = document
+    .querySelector("#refresh")
+    .addEventListener("click", refreshMessages);
+
+  const textAreaMessage = document.querySelector("#messages");
   const name = document.querySelector(
     "#controls > div:nth-child(1) > input[type=text]"
   );
   const message = document.querySelector(
     "#controls > div:nth-child(2) > input[type=text]"
   );
-
-  sendButton.addEventListener("click", sendMessage);
-  refreshButton.addEventListener("click", refreshMessages);
 
   function sendMessage() {
     const httpHeaders = {
