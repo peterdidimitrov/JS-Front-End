@@ -1,73 +1,123 @@
 function attachEvents() {
-  const baseURL = "http://localhost:3030/jsonstore/collections/books";
+  const BASE_URL = "http://localhost:3030/jsonstore/collections/books/";
+  const loadButton = document.getElementById("loadBooks");
+  const tBody = document.querySelector("body > table > tbody");
+  const submitButton = document.querySelector("#form > button");
+  const bookTitle = document.querySelector(
+    "#form > input[type=text]:nth-child(3)"
+  );
+  const bookAuthor = document.querySelector(
+    "#form > input[type=text]:nth-child(5)"
+  );
 
-  document.querySelector("#loadBooks").addEventListener("click", loadAllBooks);
-
-  const titleInput = document.querySelector('input[name="title"]');
-  const authorInput = document.querySelector('input[name="author"]');
-  const submitSaveButton = document.querySelector("#form > button");
-  const tableBody = document.querySelector("tbody");
+  submitButton.addEventListener("click", addNewBook);
+  loadButton.addEventListener("click", loadAllBooks);
 
   function loadAllBooks() {
-    while (tableBody.firstChild) {
-      tableBody.removeChild(tableBody.firstChild);
-    }
-
-    fetch(baseURL)
-      .then((res) => res.json())
-      .then((books) => {
-        Object.values(books).forEach((book) => {
-          const row = document.createElement("tr");
-          tableBody.appendChild(row);
-
-          const cellBook = document.createElement("td");
-          const cellAuthor = document.createElement("td");
-          const cellAction = document.createElement("td");
-
-          cellBook.textContent = book.title;
-          cellAuthor.textContent = book.author;
-
-          row.appendChild(cellBook);
-          row.appendChild(cellAuthor);
-          row.appendChild(cellAction);
-
-          const editButton = document.createElement("button");
+    fetch(BASE_URL)
+      .then((response) => response.json())
+      .then((data) => {
+        tBody.innerHTML = "";
+        for (const key in data) {
+          let tr = document.createElement("tr");
+          let tdAuthor = document.createElement("td");
+          tdAuthor.textContent = data[key].author;
+          let tdTitle = document.createElement("td");
+          tdTitle.textContent = data[key].title;
+          let tdButtons = document.createElement("td");
+          let editButton = document.createElement("button");
+          editButton.addEventListener("click", editBook);
           editButton.textContent = "Edit";
-          const deleteButton = document.createElement("button");
-          deleteButton.textContent = "Delete";
-          cellAction.appendChild(editButton);
-          cellAction.appendChild(deleteButton);
-          editButton.addEventListener("click", editBookInfo);
+          editButton.value = key;
+          let deleteButton = document.createElement("button");
           deleteButton.addEventListener("click", deleteBook);
-          function editBookInfo() {}
-          function deleteBook(e) {
-            fetch(baseURL, {
-              method: "DELETE",
-            });
-            console.log(e);
-          }
-        });
-      });
-  }
-  const httpHeaders = {
-    method: "Post",
-    body: JSON.stringify({
-      author: authorInput.textContent,
-      title: titleInput.textContent,
-    }),
-  };
-  if (submitSaveButton.textContent === "Submit") {
-    fetch(baseURL, httpHeaders)
-      .then((res) => res.json())
-      .then((book) => {
-        createRow(book);
+          deleteButton.textContent = "Delete";
+          deleteButton.value = key;
+          tdButtons.appendChild(editButton);
+          tdButtons.appendChild(deleteButton);
+          tr.appendChild(tdTitle);
+          tr.appendChild(tdAuthor);
+          tr.appendChild(tdButtons);
+          tBody.appendChild(tr);
+        }
       });
   }
 
-  function editBookInfo() {}
-  function deleteBook() {}
+  function editBook(event) {
+    const id = event.currentTarget.value;
+    const headingForm = document.querySelector("#form > h3");
+    headingForm.textContent = "Edit FORM";
+    const currentBookTitle =
+      event.currentTarget.parentNode.parentNode.querySelector(
+        "td:nth-child(1)"
+      ).textContent;
+    bookTitle.value = currentBookTitle;
+    const currentBookAuthor =
+      event.currentTarget.parentNode.parentNode.querySelector(
+        "td:nth-child(2)"
+      ).textContent;
+    bookAuthor.value = currentBookAuthor;
 
-  function createRow(book) {}
+    const form = document.querySelector("#form");
+    document.querySelector("#form > button").remove();
+    const saveButton = document.createElement("button");
+    saveButton.textContent = "Save";
+    saveButton.value = id;
+    saveButton.addEventListener("click", saveBook);
+    form.appendChild(saveButton);
+  }
+
+  function saveBook(event) {
+    const id = event.currentTarget.value;
+    const headingForm = document.querySelector("#form > h3");
+    headingForm.textContent = "FORM";
+
+    const httpHeaders = {
+      method: "PUT",
+      body: JSON.stringify({
+        author: bookAuthor.value,
+        title: bookTitle.value,
+      }),
+    };
+
+    fetch(`${BASE_URL}${id}`, httpHeaders)
+      .then(loadAllBooks)
+      .catch((err) => console.error(err));
+
+    const form = document.querySelector("#form");
+    document.querySelector("#form > button").remove();
+    const newButton = document.createElement("button");
+    newButton.textContent = "Submit";
+    newButton.addEventListener("click", addNewBook);
+    form.appendChild(newButton);
+    bookAuthor.value = "";
+    bookTitle.value = "";
+  }
+
+  function addNewBook() {
+    const httpHeaders = {
+      method: "POST",
+      body: JSON.stringify({
+        author: bookAuthor.value,
+        title: bookTitle.value,
+      }),
+    };
+    fetch(BASE_URL, httpHeaders)
+      .then(loadAllBooks())
+      .catch((err) => console.error(err));
+    bookTitle.value = "";
+    bookAuthor.value = "";
+  }
+
+  function deleteBook(event) {
+    const id = event.currentTarget.value;
+    const httpHeaders = {
+      method: "DELETE",
+    };
+    fetch(`${BASE_URL}${id}`, httpHeaders)
+      .then(loadAllBooks)
+      .catch((err) => console.error(err));
+  }
 }
 
 attachEvents();
