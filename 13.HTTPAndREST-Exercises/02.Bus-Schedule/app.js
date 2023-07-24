@@ -15,6 +15,11 @@ function solve() {
         currentStop = data.name;
         outputInfo.textContent = `Next stop ${currentStop}`;
         busId = data.next;
+      })
+      .catch(() => {
+        departButton.disabled = true;
+        arriveButton.disabled = true;
+        outputInfo.textContent = "Error";
       });
   }
 

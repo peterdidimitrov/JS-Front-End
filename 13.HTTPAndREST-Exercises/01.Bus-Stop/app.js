@@ -16,6 +16,7 @@ async function getInfo() {
     busStopInfo = await response.json();
   } catch (e) {
     stopName.textContent = "Error";
+    return;
   }
   stopName.textContent = busStopInfo.name;
 
