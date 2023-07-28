@@ -9,7 +9,6 @@ function solve() {
   let createTaskButton = document.querySelector("#create-task-btn");
   let deleteTaskButton = document.querySelector("#delete-task-btn");
   let taskSection = document.querySelector("#tasks-section");
-  let taskId = document.querySelector("#task-id");
   let totalPoints = document.querySelector("#total-sprint-points");
 
   let total = 0;
@@ -36,6 +35,7 @@ function solve() {
     if (
       inputTitle.value === "" ||
       inputDescription.value === "" ||
+      selectLabel.value === "" ||
       inputPoints.value === "" ||
       inputAssignee.value === ""
     ) {
@@ -71,13 +71,13 @@ function solve() {
     //create div task-card-points
     let divPoints = document.createElement("div");
     divPoints.className = "task-card-points";
-    divPoints.textContent = inputPoints.value;
+    divPoints.textContent = `Estimated ad ${inputPoints.value} pts`;
     article.appendChild(divPoints);
 
     //create div task-card-assignee
     let divAssignee = document.createElement("div");
     divAssignee.className = "task-card-assignee";
-    divAssignee.textContent = inputAssignee.value;
+    divAssignee.textContent = `Assigned to: ${inputAssignee.value}`;
     article.appendChild(divAssignee);
 
     //create div task-card-action
@@ -102,7 +102,7 @@ function solve() {
 
     inputTitle.value = "";
     inputDescription.value = "";
-    selectLabel.value = "Feature";
+    selectLabel.value = "";
     inputPoints.value = "";
     inputAssignee.value = "";
 
@@ -133,7 +133,7 @@ function solve() {
       Number(curretPoints))}pts`;
     inputTitle.value = "";
     inputDescription.value = "";
-    selectLabel.value = "Feature";
+    selectLabel.value = "";
     inputPoints.value = "";
     inputAssignee.value = "";
     createTaskButton.disabled = false;
