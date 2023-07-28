@@ -125,7 +125,6 @@ function solve() {
       inputAssignee.disabled = true;
       currentID = e.target.parentElement.parentElement;
       curretPoints = inputPoints.value;
-      console.log(curretPoints);
     }
   }
   function deleteCurrentTask() {
