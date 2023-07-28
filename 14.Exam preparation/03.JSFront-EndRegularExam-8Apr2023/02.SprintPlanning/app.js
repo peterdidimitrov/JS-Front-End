@@ -71,7 +71,7 @@ function solve() {
     //create div task-card-points
     let divPoints = document.createElement("div");
     divPoints.className = "task-card-points";
-    divPoints.textContent = `Estimated ad ${inputPoints.value} pts`;
+    divPoints.textContent = `Estimated at ${inputPoints.value} pts`;
     article.appendChild(divPoints);
 
     //create div task-card-assignee
