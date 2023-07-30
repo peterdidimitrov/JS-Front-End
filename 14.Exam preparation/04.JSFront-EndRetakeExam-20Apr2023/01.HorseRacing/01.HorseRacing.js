@@ -54,6 +54,7 @@ function solve(input) {
         break;
     }
   }
+  0
   console.log(horses.join("->"));
   console.log(`The winner is: ${horses.pop()}`);
 }
