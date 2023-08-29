@@ -7,16 +7,16 @@ const inputDate = document.querySelector("#from-date");
 const addVacantion = document.querySelector("#add-vacation");
 const editVacantionButton = document.querySelector("#edit-vacation");
 const loadVacantion = document.querySelector("#load-vacations");
-const changeButton = document.querySelector("#change-btn");
-const doneButton = document.querySelector("#done-btn");
 
 const divList = document.querySelector("#list");
+
+let currentId = "";
 
 function attachEvents() {
   loadVacantion.addEventListener("click", loadAllVacantions);
   addVacantion.addEventListener("click", add);
 }
-function loadAllVacantions(e) {
+function loadAllVacantions() {
   divList.innerHTML = "";
   fetch(BASE_URL)
     .then((res) => res.json())
@@ -24,11 +24,9 @@ function loadAllVacantions(e) {
       Object.values(data).forEach(({ name, days, date, _id }) => {
         let divContainer = createElement("div", "", divList);
         divContainer.className = "container";
-        let h2 = createElement("h2", name, divContainer);
-
-        let h3Date = createElement("h3", date, divContainer);
-
-        let h3Days = createElement("h3", days, divContainer);
+        createElement("h2", name, divContainer);
+        createElement("h3", date, divContainer);
+        createElement("h3", days, divContainer);
 
         let changeButton = createElement("button", "Change", divContainer);
         changeButton.className = "change-btn";
@@ -42,13 +40,54 @@ function loadAllVacantions(e) {
         editVacantionButton.disabled = true;
       });
     });
-  function done(e) {
-    const id = e.currentTarget.id;
-    const headers = {
-      method: "DELETE",
-    };
-    fetch(BASE_URL + `${id}`, headers).then(() => loadAllVacantions());
-  }
+}
+function done(e) {
+  const id = e.currentTarget.id;
+  const headers = {
+    method: "DELETE",
+  };
+  fetch(BASE_URL + `${id}`, headers).then(() => loadAllVacantions());
+}
+function change(e) {
+  let newName = e.target.parentElement.querySelector("h2").textContent;
+  let newDate = e.target.parentElement.querySelector("h3").textContent;
+
+  let newDays =
+    e.target.parentElement.querySelector(":nth-child(3)").textContent;
+  currentId = e.currentTarget.id;
+  divList.innerHTML = "";
+
+  inputName.value = newName;
+  inputDays.value = newDays;
+  inputDate.value = newDate;
+
+  editVacantionButton.disabled = false;
+  loadVacantion.disabled = true;
+  addVacantion.disabled = true;
+  editVacantionButton.addEventListener("click", edit);
+}
+function edit() {
+  newName = inputName.value;
+  console.log(currentId);
+  newDays = inputDays.value;
+  newDate = inputDate.value;
+  const headers = {
+    method: "PUT",
+    body: JSON.stringify({
+      name: newName,
+      days: newDays,
+      date: newDate,
+      _id: currentId,
+    }),
+  };
+  loadVacantion.disabled = false;
+  addVacantion.disabled = false;
+  editVacantionButton.disabled = true;
+  inputName.value = "";
+  inputDays.value = "";
+  inputDate.value = "";
+
+  fetch(BASE_URL + `${currentId}`, headers).then(() => loadAllVacantions());
 }
 
 function createElement(elementTag, value, parent) {
@@ -61,7 +100,15 @@ function createElement(elementTag, value, parent) {
 }
 function add(e) {
   e?.preventDefault();
-  console.log(e);
+
+  if (
+    inputName.value === "" ||
+    inputDays.value === "" ||
+    inputDate.value === ""
+  ) {
+    return;
+  }
+
   const headers = {
     method: "POST",
     body: JSON.stringify({
@@ -76,40 +123,5 @@ function add(e) {
   inputDays.value = "";
   inputDate.value = "";
 }
-function change(e) {
-  let newName = e.target.parentElement.querySelector("h2").textContent;
-  let newDate = e.target.parentElement.querySelector("h3").textContent;
 
-  let newDays =
-    e.target.parentElement.querySelector(":nth-child(3)").textContent;
-
-  divList.innerHTML = "";
-
-  inputName.value = newName;
-  inputDate.value = newDate;
-  inputDays.value = newDays;
-
-  editVacantionButton.disabled = false;
-  addVacantion.disabled = true;
-  editVacantionButton.addEventListener("click", edit);
-
-  function edit(e) {
-    const headers = {
-      method: "PUT",
-      body: JSON.stringify({
-        name: newName,
-        days: newDays,
-        date: newDate,
-      }),
-    };
-    addVacantion.disabled = false;
-    editVacantionButton.disabled = false;
-    inputName.value = "";
-    inputDays.value = "";
-    inputDate.value = "";
-
-    fetch(BASE_URL + `${e.target.id}`, headers).then(() => loadAllVacantions());
-  }
-  function done() {}
-}
 attachEvents();
